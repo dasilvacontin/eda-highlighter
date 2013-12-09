@@ -191,7 +191,11 @@ function reload_matches(roundNumberBeingWatched) {
 			var htmlObject = document.createElement('div');
             htmlObject.innerHTML = c;
 			document.getElementsByClassName("part_pal")[0].innerHTML = htmlObject.getElementsByClassName("part_pal")[0].innerHTML;
-			if (scrollCheckbox.checked) window.scrollTo(0,document.body.scrollHeight);
+			if (scrollCheckbox.checked) {
+				var scrollScript = document.createElement("script");
+				scrollScript.textContent = "window.scrollTo(0,document.body.scrollHeight)";
+				document.body.appendChild(scrollScript);
+			}
 		  }
 		}
 		xhr.send();

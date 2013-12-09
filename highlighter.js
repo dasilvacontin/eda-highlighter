@@ -49,7 +49,7 @@ var rondaTitle = document.getElementsByTagName('h2')[0];
 var rondaPlaying = 0; // num. ronda en cuya página nos encontramos
 if(window.location.href.indexOf("cmd=rondes&ronda=")>=0 && rondaTitle && rondaTitle.textContent.match(/\d+$/)) 
 	rondaPlaying = rondaTitle.textContent.match(/\d+$/)[0];
-//if (rondaTitle) rondaTitle.textContent += " - OLA K ASE";
+if (rondaTitle) rondaTitle.textContent += " - OLA K ASE";
 
 var sideMenu = document.getElementsByClassName('caixa_menu')[0];
 
@@ -191,6 +191,7 @@ function reload_matches(roundNumberBeingWatched) {
 			var htmlObject = document.createElement('div');
             htmlObject.innerHTML = c;
 			document.getElementsByClassName("part_pal")[0].innerHTML = htmlObject.getElementsByClassName("part_pal")[0].innerHTML;
+			render();
 			if (scrollCheckbox.checked) {
 				var scrollScript = document.createElement("script");
 				scrollScript.textContent = "window.scrollTo(0,document.body.scrollHeight)";
@@ -199,7 +200,6 @@ function reload_matches(roundNumberBeingWatched) {
 		  }
 		}
 		xhr.send();
-		render();
 		refreshRate = addRefreshInput.value;
 		if(isNumber(refreshRate) && refreshRate>=1000 && refreshRate<=10000) {
 			setTimeout(function() { reload_matches(rondaPlaying); },refreshRate);

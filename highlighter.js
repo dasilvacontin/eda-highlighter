@@ -21,6 +21,36 @@ function saveData () {
 	chrome.storage.sync.set({'highlight': highlight}, function() {});
 }
 
+function isNumber(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+// Cargar la página x completo x ajax y solo sustituir la parte que nos interesa (class 'part_pal'). El chat sigue ahí.
+function reload_matches(roundNumberBeingWatched) {
+	if( document.getElementsByClassName("part_pal")[0].innerHTML.indexOf('Eliminem:')<0 // si la ronda está finalizada, no fem res
+		&& isNumber(roundNumberBeingWatched) 
+		&& roundNumberBeingWatched>0) {
+		var xhr = new XMLHttpRequest();
+		xhr.open("GET", "https://tron3d-fib.jutge.org/?cmd=rondes&ronda="+roundNumberBeingWatched, false);
+		xhr.onreadystatechange = function() {
+		  if (xhr.readyState == 4) {
+            var c = xhr.responseText.split("<body >")[1].split("</body>")[0];
+			var htmlObject = document.createElement('div');
+            htmlObject.innerHTML = c;
+			document.getElementsByClassName("part_pal")[0].innerHTML = htmlObject.getElementsByClassName("part_pal")[0].innerHTML;
+		  }
+		}
+		xhr.send();
+		render();
+		refreshRate = document.getElementsByClassName('refreshRate')[0].value;
+		if(isNumber(refreshRate) && refreshRate>=1000 && refreshRate<=10000) {
+			setTimeout(function() { reload_matches(rondaPlaying); },refreshRate);
+		}else{
+			setTimeout(function() { reload_matches(rondaPlaying); },4000);
+		}
+	}
+}
+
 function render () {
 	var tds = document.getElementsByTagName('td');
 	for (var i = 0; i < tds.length; ++i) {
@@ -42,6 +72,9 @@ function setUserColor (user, color) {
 }
 
 var rondaTitle = document.getElementsByTagName('h2')[0];
+var rondaPlaying = 0; // num. ronda en cuya página nos encontramos
+if(window.location.href.indexOf("cmd=rondes&ronda=")>=0 && rondaTitle && rondaTitle.textContent.match(/\d+$/)) 
+	rondaPlaying = rondaTitle.textContent.match(/\d+$/)[0];
 //if (rondaTitle) rondaTitle.textContent += " - OLA K ASE";
 
 var sideMenu = document.getElementsByClassName('caixa_menu')[0];
@@ -104,10 +137,37 @@ addEnemyText.textContent = "Add Enemy";
 addEnemyText.style.paddingLeft = "25px";
 addEnemyButton.appendChild(addEnemyText);
 
+//Add refresh interval
+var addRefreshDiv = document.createElement("div");
+addRefreshDiv.style.width = "100%";
+addRefreshDiv.style.height = "20px";
+
+var addRefreshInput = document.createElement("input");
+addRefreshInput.setAttribute('type','number');
+addRefreshInput.style.width = "90px";
+addRefreshInput.style.height = "20px";
+addRefreshInput.style.marginLeft = "4px";
+addRefreshInput.setAttribute('class','refreshRate');
+addRefreshInput.setAttribute('min','1000');
+addRefreshInput.style.border='none';
+addRefreshInput.setAttribute('max','10000');
+addRefreshInput.setAttribute('value','4000');
+addRefreshInput.style.paddingLeft = "5px";
+addRefreshDiv.appendChild(addRefreshInput);
+
+var addRefreshText = document.createElement("p");
+addRefreshText.style.float='left';
+addRefreshText.style.fontSize = "11px";
+addRefreshText.style.lineHeight = "0px";
+addRefreshText.textContent = "Refresh rate (milliseconds)";
+addRefreshDiv.appendChild(addRefreshText);
+document.getElementsByClassName('caixa_menu')[0].style.height='375px';
+
 sideMenu.appendChild(tronTitle);
 sideMenu.appendChild(selfButton);
 sideMenu.appendChild(addFriendButton);
 sideMenu.appendChild(addEnemyButton);
+sideMenu.appendChild(addRefreshDiv);
 
 selfButton.addEventListener('click', function () {
 	var username = prompt("Write the OWN username! e.g. my.super.name");
@@ -125,6 +185,9 @@ addEnemyButton.addEventListener('click', function () {
 });
 
 render();
+
+var refreshRate = document.getElementsByClassName('refreshRate')[0].value;
+reload_matches(rondaPlaying);
 
 chrome.storage.sync.get("highlight", function (data) {
 	if (typeof data !== "undefined" && typeof data.highlight !== "undefined") highlight = data.highlight;

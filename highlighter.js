@@ -154,6 +154,27 @@ var scrollCheckbox = document.createElement("input");
 scrollCheckbox.setAttribute("type", "checkbox");
 scrollCheckboxDiv.appendChild(scrollCheckbox);
 
+// Add flechitas
+
+function insertAfter(referenceNode, newNode) {
+    referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+}
+
+var a;
+if(rondaPlaying>0) {
+	chrome.storage.sync.get(null, function(items) {
+		var actualRound = Object(items)['actualRound'];
+	    var prev = Number(rondaPlaying)-1;
+		var next = Number(rondaPlaying)+1;
+		a = document.createElement("div");
+		if(prev>=1)
+			a.innerHTML += "<a style='margin-right:20px;' href='https://tron3d-fib.jutge.org/?cmd=rondes&ronda="+prev+"'><img width='20' src='http://www.musiciansare.com/images/left.png'/></a>";
+		if(next<=actualRound)
+			a.innerHTML +="<a href='https://tron3d-fib.jutge.org/?cmd=rondes&ronda="+next+"'><img width='20' src='http://www.musiciansare.com/images/right.png'/></a>";
+		insertAfter(document.getElementsByClassName("part_pal")[0].getElementsByTagName('h2')[0],a);
+	});
+}
+
 sideMenu.appendChild(tronTitle);
 sideMenu.appendChild(selfButton);
 sideMenu.appendChild(addFriendButton);
@@ -197,6 +218,7 @@ function reload_matches(roundNumberBeingWatched) {
 				scrollScript.textContent = "window.scrollTo(0,document.body.scrollHeight)";
 				document.body.appendChild(scrollScript);
 			}
+			insertAfter(document.getElementsByClassName("part_pal")[0].getElementsByTagName('h2')[0],a);
 		  }
 		}
 		xhr.send();

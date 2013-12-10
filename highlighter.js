@@ -160,18 +160,21 @@ function insertAfter(referenceNode, newNode) {
     referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
 }
 
-var a;
+var arrowDiv;
 if(rondaPlaying>0) {
 	chrome.storage.sync.get(null, function(items) {
 		var actualRound = Object(items)['actualRound'];
 	    var prev = Number(rondaPlaying)-1;
 		var next = Number(rondaPlaying)+1;
-		a = document.createElement("div");
+		arrowDiv = document.createElement("div");
 		if(prev>=1)
-			a.innerHTML += "<a style='margin-right:20px;' href='https://tron3d-fib.jutge.org/?cmd=rondes&ronda="+prev+"'><img width='20' src='http://www.musiciansare.com/images/left.png'/></a>";
+			arrowDiv.innerHTML += "<a style='margin-right:20px;' href='https://tron3d-fib.jutge.org/?cmd=rondes&ronda="+prev+"'><img width='20' src='http://www.musiciansare.com/images/left.png'/></a>";
 		if(next<=actualRound)
-			a.innerHTML +="<a href='https://tron3d-fib.jutge.org/?cmd=rondes&ronda="+next+"'><img width='20' src='http://www.musiciansare.com/images/right.png'/></a>";
-		insertAfter(document.getElementsByClassName("part_pal")[0].getElementsByTagName('h2')[0],a);
+			arrowDiv.innerHTML +="<a href='https://tron3d-fib.jutge.org/?cmd=rondes&ronda="+next+"'><img width='20' src='http://www.musiciansare.com/images/right.png'/></a>";
+		
+		var h2title = document.getElementsByClassName("part_pal")[0].getElementsByTagName('h2')[0];
+		h2title.style.marginBottom = "10px";
+		insertAfter(h2title,arrowDiv);
 	});
 }
 
@@ -199,6 +202,15 @@ addEnemyButton.addEventListener('click', function () {
 
 render();
 
+//Authors
+var authorsDiv = document.createElement("div");
+authorsDiv.style.marginTop = "50px";
+authorsDiv.innerHTML = "EDA-Highlighter created by <a href='https://twitter.com/dasilvacontin' target='_blank'>@dasilvacontin</a> and <a href='https://github.com/mariocav' target='_blank'>@mariocav</a>.";
+function appendAuthors () {
+	insertAfter(document.getElementsByClassName('part_pal')[0], authorsDiv);
+}
+appendAuthors();
+
 // Cargar la página x completo x ajax y solo sustituir la parte que nos interesa (class 'part_pal'). El chat sigue ahí.
 function reload_matches(roundNumberBeingWatched) {
 	if( document.getElementsByClassName("part_pal")[0].innerHTML.indexOf('Eliminem:')<0 // si la ronda está finalizada, no fem res
@@ -218,7 +230,7 @@ function reload_matches(roundNumberBeingWatched) {
 				scrollScript.textContent = "window.scrollTo(0,document.body.scrollHeight)";
 				document.body.appendChild(scrollScript);
 			}
-			insertAfter(document.getElementsByClassName("part_pal")[0].getElementsByTagName('h2')[0],a);
+			insertAfter(document.getElementsByClassName("part_pal")[0].getElementsByTagName('h2')[0],arrowDiv);
 		  }
 		}
 		xhr.send();
@@ -240,12 +252,16 @@ chrome.storage.sync.get("highlight", function (data) {
 	render();
 });
 
+//Se ve que cuando haces login tiene una class diferente
+var leftMenu = document.getElementsByClassName("part_esq2")[0] || document.getElementsByClassName("part_esq1")[0];
+
 setInterval(function () {
-	var leftMenu = document.getElementsByClassName("part_esq2")[0];
+
 	if (document.body.scrollTop > 80) {
 		leftMenu.style.position = "fixed";
 		leftMenu.style.top = "0px";
 	} else {
 		leftMenu.style.position = "static";
 	}
+
 }, 16);

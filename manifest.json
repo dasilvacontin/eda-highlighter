@@ -4,7 +4,7 @@
 
   "name": "Tron3D-EDA-highlighter",
   "description": "This extension highlights your self/friends/enemies in the round result list for Tron3D-EDA. Made by David da Silva.",
-  "version": "1.57",
+  "version": "1.58",
 
   "icons":  { "128": "icon_128.png",
               "48" : "icon_48.png",

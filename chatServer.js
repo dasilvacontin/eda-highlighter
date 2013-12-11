@@ -5,8 +5,7 @@ function safe_tags(str) {
     return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') ;
 }
 
-var colors = ["#02B09C","#018AB0","#B00115","#75D451","#B051D3","#7D9742", "#424597","#BF6E4D", "#00BFFF", "#0000CD", "#CD3333", "#CD853F", "#006400", "#008B45", "#8E2323", "#FF1493", "#B23AEE", "#236B8E"];
-
+var colors = ["#822727","#C44B9E","#702F96","#453485","#4565A3","#1E6169","#0C6639","#386B15","#656924","#7D4C19","#5C1B1B","#5C1B54","#351B5C","#1B1D5C","#1B4E5C","#1B5C3E","#2C5C1B","#5C5B1B","#5C2E1B"];
 function colorForUsername (username) {
 	var sum = 0;
 	for (var i = 0; i < username.length; ++i) sum += username.charCodeAt(i);
